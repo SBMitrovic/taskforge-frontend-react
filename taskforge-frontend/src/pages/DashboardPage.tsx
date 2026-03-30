@@ -34,11 +34,13 @@ const DashboardPage = () => {
   const inProgress = tasks.filter(t => t.status === 'IN_PROGRESS').length
   const done = tasks.filter(t => t.status === 'DONE').length
 
+  // Mapa projectId → ime projekta
+  const projectMap = new Map(projects.map(p => [p.id, p.name]))
+
   return (
     <div>
       <h2 style={styles.heading}>Welcome back, {user?.username}! 👋</h2>
 
-      {/* Stats */}
       <div style={styles.statsRow}>
         <div style={styles.statCard}>
           <div style={styles.statNumber}>{projects.length}</div>
@@ -58,7 +60,6 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Projects */}
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <h3 style={styles.sectionTitle}>My Projects</h3>
@@ -90,7 +91,6 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* My Tasks */}
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>My Tasks</h3>
         <div style={styles.taskList}>
@@ -102,7 +102,12 @@ const DashboardPage = () => {
                   task.status === 'DONE' ? '#00875a' :
                   task.status === 'IN_PROGRESS' ? '#0052cc' : '#ff8b00',
               }} />
-              <span style={styles.taskTitle}>{task.title}</span>
+              <div style={styles.taskInfo}>
+                <span style={styles.taskTitle}>{task.title}</span>
+                <span style={styles.taskProject}>
+                  {projectMap.get(task.projectId) ?? 'Unknown project'}
+                </span>
+              </div>
               <span style={styles.taskPriority}>{task.priority}</span>
               <span style={styles.taskStatus}>{task.status.replace('_', ' ')}</span>
             </div>
@@ -129,8 +134,7 @@ const styles: Record<string, React.CSSProperties> = {
   projectGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' },
   projectCard: {
     background: '#fff', padding: '20px', borderRadius: '8px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.08)', textDecoration: 'none',
-    display: 'block', transition: 'box-shadow 0.2s',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.08)', textDecoration: 'none', display: 'block',
   },
   projectName: { fontSize: '15px', fontWeight: 600, color: '#172b4d', marginBottom: '6px' },
   projectDesc: { fontSize: '13px', color: '#6b778c', marginBottom: '12px' },
@@ -142,7 +146,9 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '12px 20px', borderBottom: '1px solid #f4f5f7',
   },
   statusDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
-  taskTitle: { flex: 1, fontSize: '14px', color: '#172b4d' },
+  taskInfo: { flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' },
+  taskTitle: { fontSize: '14px', color: '#172b4d' },
+  taskProject: { fontSize: '11px', color: '#6b778c' },
   taskPriority: { fontSize: '12px', color: '#6b778c' },
   taskStatus: { fontSize: '12px', color: '#6b778c', minWidth: '80px', textAlign: 'right' },
 }
