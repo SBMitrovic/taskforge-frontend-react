@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const projectApi = axios.create({
-  baseURL: 'http://localhost:1112',
+  baseURL: import.meta.env.VITE_PROJECT_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
